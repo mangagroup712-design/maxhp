@@ -1,0 +1,155 @@
+/* 既存のスタイルはそのまま維持し、以下を追加・修正 */
+
+/* --- リセットとフルスクリーン設定 --- */
+body, html { 
+    margin: 0; padding: 0; 
+    width: 100%; height: 100%; 
+    background: #000; 
+    overflow: hidden; 
+    font-family: 'Arial Black', 'Helvetica Neue', sans-serif; 
+}
+
+#game-container { 
+    position: relative; 
+    width: 100vw; 
+    height: 100vh; 
+    background: #87CEEB; 
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* --- UIレイヤー (HUD) --- */
+#ui-layer {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 10;
+    padding: 30px; box-sizing: border-box; 
+}
+
+#hud-left { position: absolute; top: 30px; left: 30px; text-align: left; color: #fff; text-shadow: 2px 2px 0 #000; }
+#score { font-size: 6vh; font-style: italic; line-height: 1; }
+.hud-label { font-size: 1.5vh; color: #ccc; letter-spacing: 2px; }
+
+#hud-bottom-left { position: absolute; bottom: 30px; left: 30px; text-align: left; color: #ffcc00; text-shadow: 2px 2px 0 #000; }
+#lives-val { font-size: 5vh; font-style: italic; }
+
+#hud-center {
+    position: absolute; top: 30px; left: 50%;
+    transform: translateX(-50%); width: 30vw; 
+}
+#nitro-bar-bg {
+    width: 100%; height: 25px;
+    background: rgba(0,0,0,0.6);
+    border: 2px solid rgba(255,255,255,0.5);
+    transform: skewX(-20deg); overflow: hidden;
+}
+#nitro-bar {
+    width: 0%; height: 100%;
+    background: linear-gradient(90deg, #ffcc00, #ff4400);
+    box-shadow: 0 0 15px #ff4400;
+}
+
+#hud-right { position: absolute; top: 30px; right: 30px; text-align: right; color: #fff; text-shadow: 3px 3px 0 #000; }
+#speed-val { font-size: 10vh; font-style: italic; line-height: 0.8; }
+.speed-unit { font-size: 2vh; font-style: italic; color: #00ffff; letter-spacing: 2px; }
+
+/* --- オーバーレイ共通 --- */
+.overlay { 
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+    background: rgba(0, 10, 20, 0.9); 
+    backdrop-filter: blur(5px); 
+    display: flex; flex-direction: column; justify-content: center; align-items: center; 
+    z-index: 20; color: #fff; pointer-events: auto; 
+}
+
+.game-title { 
+    font-size: 10vw; 
+    font-style: italic; 
+    color: transparent;
+    -webkit-text-stroke: 2px #00ffff; 
+    text-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+    margin: 0 0 40px 0;
+    line-height: 0.9;
+    text-align: center;
+    letter-spacing: -5px;
+}
+
+.menu-info {
+    font-size: 14px; color: #888; margin-bottom: 40px; 
+    letter-spacing: 2px; text-transform: uppercase;
+    text-align: center; line-height: 1.8;
+}
+.menu-info b { color: #fff; }
+
+.menu-actions {
+    display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; max-width: 400px;
+}
+
+.menu-btn {
+    background: #ff4400; color: #fff; 
+    padding: 20px 0; width: 100%;
+    font-size: 24px; font-weight: 900; font-style: italic;
+    border: none; cursor: pointer;
+    text-transform: uppercase; letter-spacing: 2px;
+    clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%);
+    transition: transform 0.1s, background 0.2s, box-shadow 0.2s;
+    box-shadow: 5px 5px 0 rgba(0,0,0,0.5);
+}
+.menu-btn:hover { background: #ff6600; transform: translate(-2px, -2px); box-shadow: 7px 7px 0 rgba(0,0,0,0.5); }
+.menu-btn:active { transform: translate(2px, 2px); box-shadow: 0 0 0 rgba(0,0,0,0.5); }
+
+.menu-btn.secondary { background: #444; }
+.menu-btn.secondary:hover { background: #666; }
+
+#difficulty-selector {
+    display: flex; justify-content: space-between; align-items: center;
+    width: 100%; padding: 15px 0;
+    color: #aaa; cursor: pointer; user-select: none;
+    border-bottom: 1px solid #333; 
+    transition: color 0.2s;
+}
+#difficulty-selector:hover { color: #fff; border-bottom-color: #fff; }
+.diff-arrow { font-size: 14px; padding: 0 10px; color: #ff4400; }
+#diff-display { font-size: 18px; font-style: italic; }
+
+.status-text { font-size: 8vw; color: #ffcc00; margin-bottom: 30px; font-style: italic; }
+.crash-text { font-size: 10vw; color: #ff0000; margin: 0; font-style: italic; text-shadow: 0 0 20px #ff0000; }
+
+/* --- トランジション（ワイプアニメーション） --- */
+#transition-layer {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 100;
+    display: flex;
+    visibility: hidden; /* 通常時は非表示 */
+}
+
+/* 2つのパネル（白とオレンジ） */
+.wipe-panel {
+    width: 50%; height: 100%;
+    transform: skewX(-20deg) translateX(-200%); /* 初期位置は画面外左 */
+    position: absolute;
+}
+.wipe-white { 
+    background: #fff; left: -10%; z-index: 102; 
+}
+.wipe-orange { 
+    background: #ff4400; left: -10%; z-index: 101; 
+}
+
+/* アニメーション定義 */
+@keyframes wipeMove {
+    0% { transform: skewX(-20deg) translateX(-200%); }
+    50% { transform: skewX(-20deg) translateX(0%); } /* 画面中央を覆う */
+    100% { transform: skewX(-20deg) translateX(250%); } /* 画面外右へ抜ける */
+}
+
+/* JSからこのクラスを付与してアニメーション開始 */
+.animating .wipe-white {
+    animation: wipeMove 0.8s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+}
+.animating .wipe-orange {
+    animation: wipeMove 0.8s cubic-bezier(0.7, 0, 0.3, 1) 0.1s forwards; /* 少し遅れて追従 */
+}
