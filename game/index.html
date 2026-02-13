@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Highway Runner 3D - Daylight Edition</title>
+    <link rel="stylesheet" href="css.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="black-curtain"></div>
+
+        <div id="transition-layer">
+            <div class="wipe-panel wipe-orange"></div>
+            <div class="wipe-panel wipe-white"></div>
+        </div>
+
+        <div id="ui-layer">
+            <div id="hud-bottom-left">
+                <span class="hud-label">LIVES</span>
+                <div id="lives-val">3</div>
+            </div>
+
+            <div id="hud-center">
+                <div id="nitro-bar-bg"><div id="nitro-bar"></div></div>
+            </div>
+
+            <div id="hud-right">
+                <div class="speed-container">
+                    <span id="speed-val">0</span>
+                    <span class="speed-unit">KM/H</span>
+                </div>
+                <div class="score-container">
+                    <span class="score-label">SCORE</span>
+                    <span id="score-val">0</span>
+                </div>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas"></canvas>
+        
+        <div id="pause-overlay" class="overlay" style="display: none;">
+            <h1 class="status-text">PAUSED</h1>
+            <div class="menu-actions">
+                <div id="btn-resume" class="menu-btn selected">RESUME</div>
+                <div id="btn-quit" class="menu-btn">QUIT TO TITLE</div>
+            </div>
+        </div>
+
+        <div id="start-menu" class="overlay">
+            <h1 class="game-title">PERSPECTIVE<br>HIGHWAY</h1>
+            
+            <div class="menu-info">
+                <b>[ARROWS]</b> STEER / MENU &nbsp;|&nbsp; 
+                <b>[SPACE]</b> NITRO / SELECT
+            </div>
+
+            <div class="menu-actions">
+                <div id="difficulty-selector">
+                    <span class="diff-arrow">◀</span>
+                    <span id="diff-display">NORMAL</span>
+                    <span class="diff-arrow">▶</span>
+                </div>
+                <div id="start-button" class="menu-btn selected">DRIVE START</div>
+            </div>
+        </div>
+
+        <div id="game-over" class="overlay" style="display: none;">
+            <h1 class="crash-text">CRASHED</h1>
+            <p style="font-size:4vh; margin:20px 0; font-style:italic;">SCORE: <span id="final-score-val">0</span></p>
+            <div class="menu-actions" style="margin-top:30px;">
+                <div id="btn-retry" class="menu-btn selected">RETRY</div>
+                <div id="btn-title" class="menu-btn">TITLE</div>
+            </div>
+        </div>
+    </div>
+    <script src="js.js"></script>
+</body>
+</html>
